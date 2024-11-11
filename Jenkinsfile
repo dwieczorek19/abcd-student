@@ -26,7 +26,7 @@ pipeline {
                         --add-host=host.docker.internal:host-gateway \
                         -v ${WORKSPACE}/.zap/passive.yaml:/zap/wrk/:rw \
                         -t ghcr.io/zaproxy/zaproxy:stable bash -c \
-                        "zap.sh -cmd -addonupdate; zap.sh -cmd -addoninstall communityScripts -addoninstall pscanrulesAlpha -addoninstall pscanrulesBeta -autorun /zap/wrk/passive_scan.yaml" \
+                        "zap.sh -cmd -addonupdate; zap.sh -cmd -addoninstall communityScripts -addoninstall pscanrulesAlpha -addoninstall pscanrulesBeta -autorun /zap/wrk/passive.yaml" \
                         || true
                 '''
             }
@@ -38,10 +38,10 @@ pipeline {
                         docker stop zap juice-shop
                         docker rm zap
                     '''
-                    defectDojoPublisher(artifact: 'results/sca-osv-scanner.json', 
+                    defectDojoPublisher(artifact: 'results/zap_xml_report.xml', 
                     productName: 'Juice Shop', 
-                    scanType: 'OSV Scan', 
-                    engagementName: 'krzysztof@bezpiecznykod.pl')
+                    scanType: 'ZAP Scan', 
+                    engagementName: 'dominika.wieczorek@xtb.com')
                 }
             }
         }
