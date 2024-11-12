@@ -23,6 +23,7 @@ pipeline {
                         bkimminich/juice-shop
                     sleep 5
                 '''
+                sh 'cd zap && chmod 666 passive.yaml'
                 sh '''
                     ls -la && docker run --name zap \
                         --add-host=host.docker.internal:host-gateway \
