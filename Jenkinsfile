@@ -16,6 +16,9 @@ pipeline {
             steps {
                 sh 'mkdir -p results/'
                 sh 'ls -la'
+                sh 'cd .zap'
+                sh 'ls'
+                sh 'cd ..'
                 sh '''
                     docker run --name juice-shop -d --rm \
                         -p 3000:3000 \
