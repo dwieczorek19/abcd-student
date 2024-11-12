@@ -16,7 +16,7 @@ pipeline {
             steps {
                 sh 'mkdir -p results/'
                 sh 'ls -la'
-                sh 'cd zap && ls'
+                sh 'pwd'
                 sh '''
                     docker run --name juice-shop -d --rm \
                         -p 3000:3000 \
@@ -26,7 +26,7 @@ pipeline {
                 sh '''
                     docker run --name zap \
                         --add-host=host.docker.internal:host-gateway \
-                        -v "$(pwd)/zap:/home/zap/wrk/:rw" \
+                        -v "$(pwd)/zap:/zap/wrk/:rw" \
                         -t ghcr.io/zaproxy/zaproxy:stable bash -c \
                         "zap.sh -cmd -addonupdate; zap.sh -cmd -addoninstall communityScripts -addoninstall pscanrulesAlpha -addoninstall pscanrulesBeta -autorun /home/zap/wrk/passive.yaml"
                         || true
