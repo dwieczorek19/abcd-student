@@ -15,8 +15,6 @@ pipeline {
         stage('[ZAP] Baseline passive-scan') {
             steps {
                 sh 'mkdir -p results/'
-                sh 'ls -la'
-                sh 'pwd'
                 sh '''
                     docker run --name juice-shop -d --rm \
                         -p 3000:3000 \
@@ -25,7 +23,7 @@ pipeline {
                 '''
                 sh 'cd zap && chmod 666 passive.yaml'
                 sh '''
-                    ls -la && docker run --name zap \
+                    docker run --name zap \
                         --add-host=host.docker.internal:host-gateway \
                         -v "/var/jenkins_home/workspace/Dominika-DevSecOps/zap:/zap/wrk/:rw" \
                         -t ghcr.io/zaproxy/zaproxy:stable bash -c \
@@ -44,6 +42,19 @@ pipeline {
                     productName: 'Juice Shop', 
                     scanType: 'ZAP Scan', 
                     engagementName: 'dominika.wieczorek@xtb.com')
+                }
+            }
+        }
+        stage('SCA scan') {
+            steps {
+                sh 'osv-scanner scan --lockfile package-lock.json --format json --output results/sca-osv-scanner.json'
+            }
+            post {
+                always {
+                    defectDojoPublisher(artifact: 'results/sca-osv-scanner.json', 
+                        productName: 'Juice Shop', 
+                        scanType: 'OSV Scan', 
+                        engagementName: 'dominika.wieczorek@xtb.com')
                 }
             }
         }
