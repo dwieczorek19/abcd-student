@@ -61,8 +61,7 @@ pipeline {
         // }
         stage('Secrets scan') {
             steps {
-                sh 'trufflehog git file://. --only-verified --bare --json'
-                // >> results/trufflehog-scan.json
+                sh 'trufflehog git file://abcd-student.git --only-verified --bare --json >> results/trufflehog-scan.json'
             }
             post {
                 always {
