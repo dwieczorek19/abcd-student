@@ -61,11 +61,11 @@ pipeline {
         stage('SAST Semgrep scan') {
             steps {
                 sh 'mkdir -p results/'
-                sh 'semgrep scan --config auto --json --json-output=semgrep.json'
+                sh 'semgrep scan --config auto --json --json-output=results/semgrep.json'
             }
             post {
                 always {
-                    defectDojoPublisher(artifact: 'results/trufflehog-scan.json', 
+                    defectDojoPublisher(artifact: 'results/semgrep.json', 
                         productName: 'Juice Shop', 
                         scanType: 'Semgrep JSON Report', 
                         engagementName: 'dominika.wieczorek@xtb.com')
