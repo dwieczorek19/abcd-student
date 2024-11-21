@@ -9,7 +9,6 @@ pipeline {
                 script {
                     cleanWs()
                     git credentialsId: 'github-token', url: 'https://github.com/dwieczorek19/abcd-student', branch: 'main'
-                    sh 'git clone --mirror https://github.com/dwieczorek19/abcd-student.git'
                 }
             }
         }
@@ -59,16 +58,16 @@ pipeline {
         //         }
         //     }
         // }
-        stage('Secrets scan') {
+        stage('SAST Semgrep scan') {
             steps {
                 sh 'mkdir -p results/'
-                sh 'trufflehog git file://abcd-student.git --only-verified --bare --json >> results/trufflehog-scan.json'
+                sh 'semgrep scan --config auto --json --json-output=semgrep.json'
             }
             post {
                 always {
                     defectDojoPublisher(artifact: 'results/trufflehog-scan.json', 
                         productName: 'Juice Shop', 
-                        scanType: 'Trufflehog Scan', 
+                        scanType: 'Semgrep JSON Report', 
                         engagementName: 'dominika.wieczorek@xtb.com')
                 }
             }
